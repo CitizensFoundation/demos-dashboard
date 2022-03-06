@@ -29,7 +29,7 @@ export const Data = [
   {
     title: "Western Leaders",
     topicName: "Western Leaders",
-    description: `Weakness, Ineffectiveness, Corruption, Russian control, Anti-national government,
+    description: `Sub topics: Weakness, Ineffectiveness, Corruption, Russian control, Anti-national government,
       Anti-national, Detached from people, Homosexuality, Lack of sovereignity, Directed by others, Double standards Against own country`,
     dataSet: {
       borderColor: "#0584a8",
