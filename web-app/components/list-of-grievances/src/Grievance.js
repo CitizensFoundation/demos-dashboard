@@ -240,16 +240,15 @@ export class Grievance extends BaseElement {
                   enabled: false,
               }
             },
-            scales: {
+/*            scales: {
                 y: {
                     ticks: {
-                        // Include a dollar sign in the ticks
                         callback: function(value, index, values) {
                             return "";
                         }
                     }
                 }
-            }
+            }*/
           }
         });
       });
@@ -276,7 +275,13 @@ export class Grievance extends BaseElement {
 
           for (let i=0;i<topicQuotes.length;i++) {
             const yearPart = topicQuotes[i]._source.createdAt.split("-")[0];
-            years[yearPart] = topicQuotes[i]._source.paragraph;
+            if (topicQuotes[i]._source.paragraph=="Keith Washington Marsha Jenkins" ||
+               topicQuotes[i]._source.paragraph=="Washington-Marshall Heights"
+             ) {
+              years[yearPart] = "";
+            } else {
+              years[yearPart] = topicQuotes[i]._source.paragraph;
+            }
           }
 
           const flatTopicQuotes = [];

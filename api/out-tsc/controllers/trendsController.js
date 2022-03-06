@@ -20,7 +20,7 @@ class TrendsController {
         this.path = "/api/trends";
         this.router = express_1.default.Router();
         this.getTopicTrends = async (request, response) => {
-            const redisKey = `Trends_${request.query.topic}_V1`;
+            const redisKey = `Trends_${request.query.topic}_V2`;
             redisClient.get(redisKey).then(async (results) => {
                 if (results) {
                     console.log("Sending cached trends");
@@ -88,7 +88,7 @@ class TrendsController {
             });
         };
         this.getTopicQuotes = async (request, response) => {
-            const redisKey = `Quotes_${request.query.topic}_V1`;
+            const redisKey = `Quotes_${request.query.topic}_V2`;
             redisClient.get(redisKey).then(async (results) => {
                 if (results) {
                     console.log("Sending cached quotes");
@@ -131,15 +131,15 @@ class TrendsController {
                                                         },
                                                     },
                                                 },
-                                                {
-                                                    range: {
-                                                        pageRank: {
-                                                            gte: 0,
-                                                            lte: 100000000,
-                                                            format: "strict_date_optional_time",
-                                                        },
-                                                    },
-                                                },
+                                                /*                      {
+                                                                        range: {
+                                                                          pageRank: {
+                                                                            gte: 0,
+                                                                            lte: 100000000,
+                                                                            format: "strict_date_optional_time",
+                                                                          },
+                                                                        },
+                                                                      },*/
                                             ],
                                             should: [],
                                             must_not: mustNot,

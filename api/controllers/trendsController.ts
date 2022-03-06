@@ -36,7 +36,7 @@ export class TrendsController {
     response: express.Response
   ) => {
 
-    const redisKey = `Trends_${request.query.topic}_V1`;
+    const redisKey = `Trends_${request.query.topic}_V2`;
 
     redisClient.get(redisKey).then(async (results:any)=>{
       if (results) {
@@ -110,7 +110,7 @@ export class TrendsController {
     request: express.Request,
     response: express.Response
   ) => {
-    const redisKey = `Quotes_${request.query.topic}_V1`;
+    const redisKey = `Quotes_${request.query.topic}_V2`;
 
     redisClient.get(redisKey).then(async (results:any)=>{
 
@@ -160,7 +160,7 @@ export class TrendsController {
                           },
                         },
                       },
-                      {
+/*                      {
                         range: {
                           pageRank: {
                             gte: 0,
@@ -168,7 +168,7 @@ export class TrendsController {
                             format: "strict_date_optional_time",
                           },
                         },
-                      },
+                      },*/
                     ],
                     should: [],
                     must_not: mustNot,
