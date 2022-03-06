@@ -82,7 +82,7 @@ export class ListOfGrievances extends BaseElement {
             <h2 class="mdc-typography--title contentTitle">Introduction to the DEMOS Dashboard</h2>
             <div class="mdc-typography--body1 subtext contentText">
               <p>The DEMOS Dashboard allows us to reveal relative trends between different topics regarding Russian propoganda in
-                English, German, Italian, Polish & Hungarian. We use CommonCrawl, granting us the ability to scan web crawls from
+                English (70%), German (13%), Italian (13%), Polish (3%) & Hungarian (1%). The CommonCrawl web archive is used, granting us the ability to scan web crawls from
                 every year from 2013 to the present. We developed search criteria targeting thousands of keywords.</p>
               <p>
               <p>The DEMOS Dashboard is a part of the Horizon 2020 funded
