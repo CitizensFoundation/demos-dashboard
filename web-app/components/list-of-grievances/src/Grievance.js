@@ -214,7 +214,8 @@ export class Grievance extends BaseElement {
         for (let i = 0; i < responses.length; i++) {
           const yearLabel = responses[i].key_as_string.split('-')[0];
           yearLabels.push(yearLabel);
-          const docCount = this._normalizeDocCount(parseInt(yearLabel), responses[i].doc_count);
+          const docCount = responses[i].doc_count;
+//          const docCount = this._normalizeDocCount(parseInt(yearLabel), responses[i].doc_count);
           years[responses[i].key_as_string.split('-')[0]] = docCount;
           counts.push(docCount);
         }
