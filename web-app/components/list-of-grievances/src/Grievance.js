@@ -125,6 +125,26 @@ export class Grievance extends BaseElement {
 
         #domains-charts {
           margin-top: 32px;
+          height: 800px;
+          width: 800px;
+        }
+
+        #line-chart {
+          height: 200px;
+          width: 800px;
+        }
+
+        @media (max-width: 600px) {
+          #domains-charts {
+            height: 800px;
+            width: 100%;
+          }
+
+          #line-chart {
+            height: 200px;
+            width: 100%;
+
+          }
         }
       `,
     ];

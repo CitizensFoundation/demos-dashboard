@@ -100,6 +100,18 @@ export class YourGrievancesApp extends LitElement {
         height: 95px;
         padding-bottom: 16px;
       }
+
+      @media (max-width: 600px) {
+        .demosImage {
+          width: 75%;
+          height: inherit;
+          padding-bottom: 16px;
+          margin-left: auto;
+          margin-right: auto;
+          padding-left: 24px;
+
+        }
+      }
     `];
   }
 

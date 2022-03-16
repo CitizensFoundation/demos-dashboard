@@ -61,6 +61,16 @@ export class ListOfGrievances extends BaseElement {
         .readMore {
           color: #555;
         }
+
+        @media (max-width: 600px) {
+          .mdc-card {
+            max-width: 100%;
+            padding: 16px;
+            margin: 0;
+            background-color: #fff;
+            margin-bottom: 32px;
+          }
+        }
       `,
     ];
   }
