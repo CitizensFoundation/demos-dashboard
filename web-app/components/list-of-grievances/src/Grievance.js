@@ -107,6 +107,25 @@ export class Grievance extends BaseElement {
         a {
           color: #444;
         }
+
+        mwc-linear-progress  {
+          --mdc-theme-primary: #000;
+          margin-top: 8px;
+        }
+
+        mwc-button.openButton {
+          color: #000;
+          --mdc-theme-primary: #000;
+          width: 100%;
+          margin-right: auto;
+          margin-left: auto;
+          margin-top: 32px;
+          margin-bottom: 0px;
+        }
+
+        #domains-charts {
+          margin-top: 32px;
+        }
       `,
     ];
   }
@@ -122,7 +141,7 @@ export class Grievance extends BaseElement {
 
   render() {
     return html`
-      <div class="mdc-card shadow-animation shadow-elevation-3dp" @click="${this._openGrievance}">
+      <div class="mdc-card shadow-animation shadow-elevation-3dp"">
         <div class="mdc-card__primary-action">
           <div class="mdc-card__media mdc-card__media--16-9 my-media"></div>
           <div class="content">
@@ -132,19 +151,31 @@ export class Grievance extends BaseElement {
             </div>
           </div>
           <canvas id="line-chart" width="800" height="200"></canvas>
-          ${ (this.fullView && !this.topicQuotes) ? html`
-            <mwc-linear-progress indeterminate></mwc-linear-progress>
-          ` : html``}
-          ${ this.topicQuotes ? html`
-            <div class="layout-inline vertical center-center">
-              <div class="quotesTitle">Random quotes</div>
-              ${ this.topicQuotes.map( quote => {
-              return html`
-                <div class="quoteHeader">${quote.year}</div>
-                <div class="quoteParagraph">${quote.paragraph}</div>
+
+          ${!this.fullView
+            ? html`
+                <canvas id="domains-charts" width="800" height="800"></canvas>
+                <mwc-button class="openButton" @click="${this._openGrievance}">Show random quotes</mwc-button>
               `
-              })}
-            </div>` : html`` }
+            : html``}
+          ${this.fullView && !this.topicQuotes
+            ? html`
+                <mwc-linear-progress indeterminate></mwc-linear-progress>
+              `
+            : html``}
+          ${this.topicQuotes
+            ? html`
+                <div class="layout-inline vertical center-center">
+                  <div class="quotesTitle">Random quotes</div>
+                  ${this.topicQuotes.map(quote => {
+                    return html`
+                      <div class="quoteHeader">${quote.year}</div>
+                      <div class="quoteParagraph">${quote.paragraph}</div>
+                    `;
+                  })}
+                </div>
+              `
+            : html``}
           <mdc-ripple></mdc-ripple>
         </div>
         ${this.fullView
@@ -153,7 +184,8 @@ export class Grievance extends BaseElement {
                 @click="${() => {
                   this.fire('close-grievance');
                 }}"
-              >close</mwc-icon>
+                >close</mwc-icon
+              >
             `
           : null}
       </div>
@@ -168,13 +200,13 @@ export class Grievance extends BaseElement {
 
   _normalizeMap(min, max) {
     const delta = max - min;
-    return function (val) {
-        return (val - min) / delta;
+    return function(val) {
+      return (val - min) / delta;
     };
   }
 
   _normalizeArray(array, min, max) {
-    return array.map(this._normalizeArray(0,1))
+    return array.map(this._normalizeArray(0, 1));
   }
 
   _normalizeDocCount(year, docCount) {
@@ -186,16 +218,81 @@ export class Grievance extends BaseElement {
       2018: 2859612925,
       2019: 2080904610,
       2020: 2556108707,
-      2021: 2445330855
-    }
+      2021: 2445330855,
+    };
 
-    const fraction = docCount/(commonCrawlYearlyVolume[year]/13747297828);
+    const fraction = docCount / (commonCrawlYearlyVolume[year] / 13747297828);
 
     return fraction;
   }
 
+  async getTopicDomains() {
+    const chartElement = this.shadowRoot.getElementById('domains-charts');
+
+    fetch(`/api/trends/getTopicDomains?topic=${this.grievanceData.topicName}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(responses => {
+        responses.shift();
+        const domainLabels = [];
+        const counts = [];
+        const domains = {};
+
+        for (let i = 0; i < responses.length; i++) {
+          const domainLabel = responses[i].key;
+          domainLabels.push(domainLabel);
+          const docCount = responses[i].doc_count;
+          //          const docCount = this._normalizeDocCount(parseInt(yearLabel), responses[i].doc_count);
+          domains[responses[i].key] = docCount;
+          counts.push(docCount);
+        }
+        const chart = new Chart(chartElement, {
+          type: 'bar',
+          data: {
+            labels: domainLabels,
+            datasets: [
+              {
+                data: counts,
+                label: `Top Website Hits`,
+                borderColor: this.grievanceData.dataSet.borderColor,
+                fill: false,
+              },
+            ],
+          },
+          options: {
+            indexAxis: 'y',
+            onClick: (event, item, legend) => {
+              if (item && item.length>0) {
+                const idx = item[0].index;
+                const url = `http://${domainLabels[idx]}`;
+                window.open(url, "_blank");
+              }
+           },
+            plugins: {
+              tooltip: {
+                enabled: true,
+              },
+            },
+            /*            scales: {
+                y: {
+                    ticks: {
+                        callback: function(value, index, values) {
+                            return "";
+                        }
+                    }
+                }
+            }*/
+          },
+        });
+      });
+  }
+
   firstUpdated() {
     super.firstUpdated();
+    this.getTopicDomains();
     const lineChartElement = this.shadowRoot.getElementById('line-chart');
 
     fetch(`/api/trends/getTopicTrends?topic=${this.grievanceData.topicName}`, {
@@ -215,7 +312,7 @@ export class Grievance extends BaseElement {
           const yearLabel = responses[i].key_as_string.split('-')[0];
           yearLabels.push(yearLabel);
           const docCount = responses[i].doc_count;
-//          const docCount = this._normalizeDocCount(parseInt(yearLabel), responses[i].doc_count);
+          //          const docCount = this._normalizeDocCount(parseInt(yearLabel), responses[i].doc_count);
           years[responses[i].key_as_string.split('-')[0]] = docCount;
           counts.push(docCount);
         }
@@ -238,10 +335,10 @@ export class Grievance extends BaseElement {
           options: {
             plugins: {
               tooltip: {
-                  enabled: false,
-              }
+                enabled: false,
+              },
             },
-/*            scales: {
+            /*            scales: {
                 y: {
                     ticks: {
                         callback: function(value, index, values) {
@@ -250,7 +347,7 @@ export class Grievance extends BaseElement {
                     }
                 }
             }*/
-          }
+          },
         });
       });
 
@@ -263,23 +360,24 @@ export class Grievance extends BaseElement {
         .then(response => response.json())
         .then(topicQuotes => {
           const years = {
-            "2013": "No data yet",
-            "2014": "No data yet",
-            "2015": "No data yet",
-            "2016": "No data yet",
-            "2017": "No data yet",
-            "2018": "No data yet",
-            "2019": "No data yet",
-            "2020": "No data yet",
-            "2021": "No data yet"
-          }
+            '2013': 'No data yet',
+            '2014': 'No data yet',
+            '2015': 'No data yet',
+            '2016': 'No data yet',
+            '2017': 'No data yet',
+            '2018': 'No data yet',
+            '2019': 'No data yet',
+            '2020': 'No data yet',
+            '2021': 'No data yet',
+          };
 
-          for (let i=0;i<topicQuotes.length;i++) {
-            const yearPart = topicQuotes[i]._source.createdAt.split("-")[0];
-            if (topicQuotes[i]._source.paragraph=="Keith Washington Marsha Jenkins" ||
-               topicQuotes[i]._source.paragraph=="Washington-Marshall Heights"
-             ) {
-              years[yearPart] = "";
+          for (let i = 0; i < topicQuotes.length; i++) {
+            const yearPart = topicQuotes[i]._source.createdAt.split('-')[0];
+            if (
+              topicQuotes[i]._source.paragraph == 'Keith Washington Marsha Jenkins' ||
+              topicQuotes[i]._source.paragraph == 'Washington-Marshall Heights'
+            ) {
+              years[yearPart] = '';
             } else {
               years[yearPart] = topicQuotes[i]._source.paragraph;
             }

@@ -19,6 +19,75 @@ class TrendsController {
     constructor() {
         this.path = "/api/trends";
         this.router = express_1.default.Router();
+        this.getTopicDomains = async (request, response) => {
+            const redisKey = `Trends_Domains_${request.query.topic}_V1`;
+            redisClient.get(redisKey).then(async (results) => {
+                if (results) {
+                    console.log("Sending cached trends");
+                    response.send(JSON.parse(results));
+                }
+                else {
+                    const body = {
+                        aggs: {
+                            "2": {
+                                terms: {
+                                    field: "domainName.keyword",
+                                    order: {
+                                        _count: "desc"
+                                    },
+                                    size: 42,
+                                },
+                            },
+                        },
+                        size: 0,
+                        stored_fields: ["*"],
+                        script_fields: {},
+                        docvalue_fields: [{ field: "createdAt", format: "date_time" }],
+                        _source: { excludes: [] },
+                        query: {
+                            bool: {
+                                must: [
+                                /*{ term: { oneTwoRelevanceScoreV3: 1 } },
+                                { term: { oneTwoRelevanceScoreV2: 1 } },
+                                { term: { oneTwoRelevanceScore: 1 } }*/
+                                ],
+                                filter: [
+                                    { match_all: {} },
+                                    { match_phrase: { topic: request.query.topic } },
+                                    {
+                                        range: {
+                                            createdAt: {
+                                                gte: "2006-03-01T01:57:35.660Z",
+                                                lte: "2023-03-01T01:57:35.660Z",
+                                                format: "strict_date_optional_time",
+                                            },
+                                        },
+                                    }
+                                ],
+                                should: [],
+                                must_not: [
+                                //                { "term" : { "relevanceScore" : 0 } }
+                                ],
+                            },
+                        },
+                    };
+                    try {
+                        const result = await this.esClient.search({
+                            index: "urls",
+                            body: body,
+                        });
+                        const finalResults = result.body.aggregations["2"].buckets;
+                        await redisClient.set(redisKey, JSON.stringify(finalResults), "EX", 60 * 60 * 24 * 30 * 24);
+                        response.send(finalResults);
+                        console.log(result);
+                    }
+                    catch (ex) {
+                        console.error(ex);
+                        response.sendStatus(500);
+                    }
+                }
+            });
+        };
         this.getTopicTrends = async (request, response) => {
             const redisKey = `Trends_${request.query.topic}_V2`;
             redisClient.get(redisKey).then(async (results) => {
@@ -176,6 +245,7 @@ class TrendsController {
     intializeRoutes() {
         this.router.get(this.path + "/getTopicTrends", this.getTopicTrends);
         this.router.get(this.path + "/getTopicQuotes", this.getTopicQuotes);
+        this.router.get(this.path + "/getTopicDomains", this.getTopicDomains);
         //    this.router.post(this.path, this.createAPost);
     }
     setEsClient(esClient) {
