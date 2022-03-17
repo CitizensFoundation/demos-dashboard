@@ -263,7 +263,6 @@ export class Grievance extends BaseElement {
     })
       .then(response => response.json())
       .then(responses => {
-        responses.shift();
         const domainLabels = [];
         const counts = [];
         const domains = {};
@@ -329,7 +328,6 @@ export class Grievance extends BaseElement {
     })
       .then(response => response.json())
       .then(responses => {
-        responses.shift();
         this.responses = responses;
         const yearLabels = [];
         const counts = [];

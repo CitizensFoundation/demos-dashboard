@@ -172,7 +172,7 @@ class TrendsController {
                     must.push({ term: { oneTwoRelevanceScoreV2: 1 } });
                     must.push({ term: { oneTwoRelevanceScore: 1 } });*/
                     // Main
-                    mustNot.push({ term: { relevanceScore: 0 } });
+                    //mustNot.push({ term: { relevanceScore: 0 } });
                     /*must.push({
                       "script": {
                         "script": "doc['paragraph'].length < 100"
@@ -214,7 +214,7 @@ class TrendsController {
                                             must_not: mustNot,
                                         },
                                     },
-                                    random_score: {},
+                                    random_score: { seed: "5435435" },
                                 }
                             },
                         };

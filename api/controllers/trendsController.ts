@@ -88,6 +88,8 @@ export class TrendsController {
               ],
             },
           },
+
+
         };
 
         try {
@@ -208,7 +210,7 @@ export class TrendsController {
         must.push({ term: { oneTwoRelevanceScore: 1 } });*/
 
         // Main
-        mustNot.push({ term: { relevanceScore: 0 } });
+        //mustNot.push({ term: { relevanceScore: 0 } });
 
         /*must.push({
           "script": {
@@ -253,7 +255,7 @@ export class TrendsController {
                     must_not: mustNot,
                   },
                 },
-                random_score: {},
+                random_score: { seed: "5435435" },
               }
             },
           };
