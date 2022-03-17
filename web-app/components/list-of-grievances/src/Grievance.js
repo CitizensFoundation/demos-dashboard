@@ -100,6 +100,12 @@ export class Grievance extends BaseElement {
           padding: 16px;
         }
 
+        .domainName {
+          font-size: 14px;
+          padding-left: 16px;
+          padding-bottom: 16px;
+        }
+
         mwc-icon {
           color: #000;
         }
@@ -191,6 +197,7 @@ export class Grievance extends BaseElement {
                     return html`
                       <div class="quoteHeader">${quote.year}</div>
                       <div class="quoteParagraph">${quote.paragraph}</div>
+                      <div class="domainName"><a href="http://${quote.domainName}" target="_blank">${quote.domainName}</a></div>
                     `;
                   })}
                 </div>
@@ -397,15 +404,15 @@ export class Grievance extends BaseElement {
               topicQuotes[i]._source.paragraph == 'Keith Washington Marsha Jenkins' ||
               topicQuotes[i]._source.paragraph == 'Washington-Marshall Heights'
             ) {
-              years[yearPart] = '';
+              years[yearPart] = {paragraph: ''};
             } else {
-              years[yearPart] = topicQuotes[i]._source.paragraph;
+              years[yearPart] = { paragraph: topicQuotes[i]._source.paragraph, domainName: topicQuotes[i]._source.domainName };
             }
           }
 
           const flatTopicQuotes = [];
           for (const year in years) {
-            flatTopicQuotes.push({ year: year, paragraph: years[year] });
+            flatTopicQuotes.push({ year: year, paragraph: years[year].paragraph, domainName: years[year].domainName });
           }
 
           this.topicQuotes = flatTopicQuotes;
