@@ -47,6 +47,7 @@ export class ListOfGrievances extends BaseElement {
 
         .contentText {
           font-size: 16px !important;
+          color: #6f6f6f;
         }
 
         .contentTitle {
@@ -55,7 +56,7 @@ export class ListOfGrievances extends BaseElement {
         }
 
         a {
-          color: rgba(0, 0, 0, 0.54);
+          color: rgba(0, 0, 0, 0.64);
         }
 
         .readMore {
@@ -91,14 +92,38 @@ export class ListOfGrievances extends BaseElement {
           <div class="content">
             <h2 class="mdc-typography--title contentTitle">Introduction to the DEMOS Dashboard</h2>
             <div class="mdc-typography--body1 subtext contentText">
-              <p>The DEMOS Dashboard allows us to reveal relative trends between different topics regarding Russian propoganda in
-                English (70%), German (13%), Italian (13%), Polish (3%) & Hungarian (1%). The CommonCrawl web archive is used, granting us the ability to scan web crawls from
-                every year from 2013 to the present. We developed search criteria targeting thousands of keywords.</p>
               <p>
-              <p>The DEMOS Dashboard is a part of the Horizon 2020 funded
-              <a href="https://demos-h2020.eu/en" target="_blank"
-                >DEMOS project</a
-              ></p>
+                The DEMOS Dashboard is a part of the Horizon 2020 funded
+                <a href="https://demos-h2020.eu/en" target="_blank">DEMOS project</a>. DEMOS
+                (Democratic Efficacy and the Varieties of Populism in Europe) is a research and
+                innovation project studying populism and its impacts on democracy.
+              </p>
+              <p>
+                The DEMOS Dashboard allows to reveal relative trends between online-content that are
+                likely to be Russian-influenced narratives in English (70%), German (13%), Italian
+                (13%), Polish (3%) & Hungarian (1%). The search is based on a qualitative analysis,
+                conducted in 2020, of Russian influenced narratives by populist actors in one single
+                case study (Bulgaria). Consequently, the research only considers topics that were
+                relevant by this moment of time. Building on the results of the case study, the
+                DEMOS researchers developed generalised search criteria targeting thousands of
+                keywords in the various languages.
+              </p>
+              <p>
+                The DEMOS Dashboard uses the CommonCrawl method that has the ability to scan the web
+                for results from 2013 to the present. (The search did not include social media
+                content.)
+              </p>
+              <p>
+                <em>
+                  Disclaimer: the research team followed a sophisticated methodology to ensure the
+                  best possible quality of outcome. One unavoidable shortcoming is the inclusion on
+                  the DEMOS Dashboard of online content/websites that discusses such narratives,
+                  without actively reproducing them. Consequently, not all websites listed in this
+                  tool can be considered to be influenced by Russian narratives. The Dashboard still
+                  establishes a valuable starting point of research to understand what websites
+                  share this specific type of content.
+                </em>
+              </p>
             </div>
           </div>
         </div>
