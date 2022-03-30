@@ -20,7 +20,7 @@ class TrendsController {
         this.path = "/api/trends";
         this.router = express_1.default.Router();
         this.getTopicDomains = async (request, response) => {
-            const redisKey = `Trends_Domains_${request.query.topic}_V1`;
+            const redisKey = `Trends_Domains_${request.query.topic}_V4`;
             redisClient.get(redisKey).then(async (results) => {
                 if (results) {
                     console.log("Sending cached trends");
@@ -77,7 +77,7 @@ class TrendsController {
                             body: body,
                         });
                         const finalResults = result.body.aggregations["2"].buckets;
-                        await redisClient.set(redisKey, JSON.stringify(finalResults), "EX", 60 * 60 * 24 * 30 * 24);
+                        await redisClient.set(redisKey, JSON.stringify(finalResults), "EX", 60 * 60 * 24 * 30 * 2240);
                         response.send(finalResults);
                         console.log(result);
                     }
@@ -89,7 +89,7 @@ class TrendsController {
             });
         };
         this.getTopicTrends = async (request, response) => {
-            const redisKey = `Trends_${request.query.topic}_V2`;
+            const redisKey = `Trends_${request.query.topic}_V4`;
             redisClient.get(redisKey).then(async (results) => {
                 if (results) {
                     console.log("Sending cached trends");
@@ -145,7 +145,7 @@ class TrendsController {
                             body: body,
                         });
                         const finalResults = result.body.aggregations["2"].buckets;
-                        await redisClient.set(redisKey, JSON.stringify(finalResults), "EX", 60 * 60 * 24 * 30 * 24);
+                        await redisClient.set(redisKey, JSON.stringify(finalResults), "EX", 60 * 60 * 24 * 30 * 2240);
                         response.send(finalResults);
                         console.log(result);
                     }
@@ -157,7 +157,7 @@ class TrendsController {
             });
         };
         this.getTopicQuotes = async (request, response) => {
-            const redisKey = `Quotes_${request.query.topic}_V2`;
+            const redisKey = `Quotes_${request.query.topic}_V4`;
             redisClient.get(redisKey).then(async (results) => {
                 if (results) {
                     console.log("Sending cached quotes");
@@ -230,7 +230,8 @@ class TrendsController {
                             response.sendStatus(500);
                         }
                     }
-                    await redisClient.set(redisKey, JSON.stringify(returnQuotes), "EX", 3);
+                    const forever = true;
+                    await redisClient.set(redisKey, JSON.stringify(returnQuotes), "EX", forever ? 60 * 60 * 24 * 30 * 2240 : 3);
                     response.send(returnQuotes);
                 }
             });

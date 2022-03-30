@@ -38,7 +38,7 @@ export class TrendsController {
     response: express.Response
   ) => {
 
-    const redisKey = `Trends_Domains_${request.query.topic}_V1`;
+    const redisKey = `Trends_Domains_${request.query.topic}_V4`;
 
     redisClient.get(redisKey).then(async (results:any)=>{
       if (results) {
@@ -100,7 +100,7 @@ export class TrendsController {
 
           const finalResults = result.body.aggregations["2"].buckets;
 
-          await redisClient.set(redisKey, JSON.stringify(finalResults), "EX", 60*60*24*30*24);
+          await redisClient.set(redisKey, JSON.stringify(finalResults), "EX", 60*60*24*30*2240);
           response.send(finalResults);
           console.log(result);
         } catch (ex) {
@@ -117,7 +117,7 @@ export class TrendsController {
     response: express.Response
   ) => {
 
-    const redisKey = `Trends_${request.query.topic}_V2`;
+    const redisKey = `Trends_${request.query.topic}_V4`;
 
     redisClient.get(redisKey).then(async (results:any)=>{
       if (results) {
@@ -176,7 +176,7 @@ export class TrendsController {
 
           const finalResults = result.body.aggregations["2"].buckets;
 
-          await redisClient.set(redisKey, JSON.stringify(finalResults), "EX", 60*60*24*30*24);
+          await redisClient.set(redisKey, JSON.stringify(finalResults), "EX", 60*60*24*30*2240);
           response.send(finalResults);
           console.log(result);
         } catch (ex) {
@@ -191,7 +191,7 @@ export class TrendsController {
     request: express.Request,
     response: express.Response
   ) => {
-    const redisKey = `Quotes_${request.query.topic}_V2`;
+    const redisKey = `Quotes_${request.query.topic}_V4`;
 
     redisClient.get(redisKey).then(async (results:any)=>{
 
@@ -272,7 +272,9 @@ export class TrendsController {
           }
         }
 
-        await redisClient.set(redisKey, JSON.stringify(returnQuotes), "EX", 3);
+        const forever = true;
+
+        await redisClient.set(redisKey, JSON.stringify(returnQuotes), "EX", forever ? 60*60*24*30*2240 : 3);
 
         response.send(returnQuotes);
       }
